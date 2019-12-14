@@ -1,0 +1,188 @@
+#Test with: http://editor.swagger.io/
+
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Microservice for Location
+  description: Express.js + MongoDB cloud
+  license:
+    name: Software Architecture, 2019-II
+host: localhost:5003
+basePath: /locations
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /locations/add:
+    post:
+      summary: Creates a new location
+      operationId: createLocation
+      parameters:
+        - name: location
+          in: body
+          required: true
+          description: Location Object
+          schema:
+            $ref: '#/definitions/UserInput'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+            
+  /locations:          
+    get:
+      summary: Returns all locations
+      operationId: getAllUsers
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/LocationsList'
+        '406':
+          description: Not Acceptable (Invalid Params)
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /locations/{id}:
+    get:
+      summary: Returns a location with the given id
+      operationId: getLocationById
+      parameters:
+        - name: id
+          in: path
+          description: The id of the location to be returned
+          required: true
+          type: integer
+      responses:
+        '201':
+          description: Ok
+          schema:
+            $ref: '#/definitions/Location'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+    put:
+      summary: Updates a location with the given id
+      operationId: updateLocation
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user to be updated
+          required: true
+          type: integer
+        - name: user
+          in: body
+          required: true
+          description: Location Object
+          schema:
+            $ref: '#/definitions/UserInput'
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/Location'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+    delete:
+      summary: Deletes a location with the given id
+      operationId: deleteLocation
+      parameters:
+        - name: id
+          in: path
+          description: The id of the location to be deleted
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Ok
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+definitions:
+
+  Location:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      address:
+        type: string
+      coordinates:
+        type: object
+        properties:
+          lat:
+            type: number
+          long:
+            type: number
+
+  UserInput:
+    type: object
+    properties:
+      id:
+        type: integer
+      address:
+        type: string
+      name:
+        type: string
+      coordinates:
+        type: object
+        properties:
+          lat:
+            type: number
+          long:
+            type: number
+
+  LocationsList:
+    type: object
+    required:
+      - list
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/Location'
+          
+
+# Errors
+  ErrorModel:
+    type: object
+    required:
+      - error
+    properties:
+      error:
+        type: object
