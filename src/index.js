@@ -3,7 +3,9 @@ let app = express();
 let locationRoute = require('./routes/location');
 let path = require('path');
 let bodyParser = require('body-parser');
+var cors = require('cors');
 
+app.use(cors());
 
 app.use(bodyParser.json());
 
